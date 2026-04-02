@@ -46,7 +46,10 @@ export default function LoginPage() {
     const handleLoginSuccess = (user: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         const role = user.role;
         
-        // Use hard redirection to ensure the next page loads with a fresh state and bypasses any router caching
+        // Hide modal immediately to prevent flickering
+        setShow2FA(false);
+
+        // Calculate target
         let target = "/citizen/dashboard";
         if (role === "ADMIN" || role === "SUPER_ADMIN") {
             target = "/admin/dashboard";
@@ -56,7 +59,12 @@ export default function LoginPage() {
             target = "/officer/dashboard";
         }
         
-        window.location.assign(target);
+        console.log("Redirecting to:", target);
+        
+        // Use a short timeout to ensure the browser has processed the cookie before navigation
+        setTimeout(() => {
+            window.location.href = target;
+        }, 150);
     };
 
     return (
