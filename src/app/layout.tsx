@@ -36,6 +36,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import Chatbot from "@/components/Chatbot";
 import MaintenanceWatcher from "@/components/MaintenanceWatcher";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function RootLayout({
   children,
@@ -50,6 +51,7 @@ export default function RootLayout({
         <MaintenanceWatcher />
         <Chatbot />
         {children}
+        <Analytics />
       </body>
     </html>
   );
