@@ -47,13 +47,13 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-32 pb-24 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 pb-20 sm:pt-32 sm:pb-24 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto animate-slide-up">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-semibold mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs sm:text-sm font-semibold mb-6 sm:mb-8">
             <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
             Next-Gen Governance Platform
           </div>
-          <h1 className="text-5xl font-heading font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-[1.1]">
+          <h1 className="text-4xl font-heading font-black tracking-tight text-white sm:text-6xl lg:text-7xl leading-[1.15] sm:leading-[1.1]">
             Empowering Citizens.<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
               Enabling Governance.

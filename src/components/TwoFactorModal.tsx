@@ -80,12 +80,15 @@ export default function TwoFactorModal({ isOpen, onClose, userId, email, onSucce
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Verification failed");
+            if (!res.ok) {
+                setLoading(false);
+                throw new Error(data.error || "Verification failed");
+            }
 
+            // SUCCESS: Do not set loading to false; let the navigation handle it
             onSuccess(data.user);
         } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             setError(err.message);
-        } finally {
             setLoading(false);
         }
     };

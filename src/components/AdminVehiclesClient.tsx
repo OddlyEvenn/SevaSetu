@@ -36,9 +36,9 @@ export default function AdminVehiclesClient({
         <div className="grid gap-12 lg:grid-cols-3">
             {/* Add Vehicle Form */}
             <div className="lg:col-span-1">
-                <div className="rounded-[2.5rem] border border-slate-200 bg-white p-10 shadow-sm relative overflow-hidden group">
+                <div className="rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200 bg-white p-6 sm:p-10 shadow-sm relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-10 -mt-10 group-hover:bg-blue-100 transition-colors"></div>
-                    <h2 className="text-2xl font-black text-slate-900 mb-8 relative z-10">Add Vehicle</h2>
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-6 sm:mb-8 relative z-10">Add Vehicle</h2>
                     <form action={createVehicleAction} className="space-y-6 relative z-10">
                         <div>
                             <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Registration Number</label>
@@ -84,63 +84,65 @@ export default function AdminVehiclesClient({
 
             {/* Vehicles List */}
             <div className="lg:col-span-2">
-                <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
-                    <table className="min-w-full divide-y divide-slate-100">
-                        <thead className="bg-slate-50/50">
-                            <tr>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Vehicle Entity</th>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Department</th>
-                                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Live Status</th>
-                                <th className="relative px-8 py-5"></th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-slate-50">
-                            {initialVehicles.map((vehicle) => (
-                                <tr key={vehicle.id} className="hover:bg-blue-50/30 transition-colors group">
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center">
-                                            <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                                <TruckIcon className="h-6 w-6" />
-                                            </div>
-                                            <div className="ml-5">
-                                                <div className="text-lg font-black text-slate-900 leading-tight">{vehicle.registrationNumber}</div>
-                                                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-0.5">{vehicle.type.replace("_", " ")}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <span className="text-sm font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
-                                            {vehicle.department?.name || "Global"}
-                                        </span>
-                                    </td>
-                                    <td className="px-8 py-6">
-                                        <div className="flex items-center gap-2">
-                                            <span className={`h-2 w-2 rounded-full ${vehicle.isActive ? "bg-emerald-500 animate-pulse" : "bg-red-500"}`}></span>
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${vehicle.isActive ? "text-emerald-700" : "text-red-700"}`}>
-                                                {vehicle.isActive ? "Online" : "Offline"}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="px-8 py-6 text-right">
-                                        <div className="flex items-center justify-end gap-3 transition-opacity">
-                                            <button
-                                                onClick={() => setTrackingVehicle(vehicle)}
-                                                className="h-10 px-4 bg-blue-600 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all"
-                                            >
-                                                Surveillance
-                                            </button>
-                                            <form action={deleteVehicleAction}>
-                                                <input type="hidden" name="vehicleId" value={vehicle.id} />
-                                                <button type="submit" className="h-10 w-10 flex items-center justify-center bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all">
-                                                    <TrashIcon className="h-5 w-5" />
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
+                <div className="rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-slate-100">
+                            <thead className="bg-slate-50/50">
+                                <tr>
+                                    <th className="px-6 sm:px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Vehicle Entity</th>
+                                    <th className="px-6 sm:px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Department</th>
+                                    <th className="px-6 sm:px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Live Status</th>
+                                    <th className="relative px-6 sm:px-8 py-5"></th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-slate-50">
+                                {initialVehicles.map((vehicle) => (
+                                    <tr key={vehicle.id} className="hover:bg-blue-50/30 transition-colors group">
+                                        <td className="px-6 sm:px-8 py-6">
+                                            <div className="flex items-center">
+                                                <div className="h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center rounded-xl sm:rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                    <TruckIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                                                </div>
+                                                <div className="ml-4 sm:ml-5">
+                                                    <div className="text-base sm:text-lg font-black text-slate-900 leading-tight">{vehicle.registrationNumber}</div>
+                                                    <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest mt-0.5">{vehicle.type.replace("_", " ")}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 sm:px-8 py-6">
+                                            <span className="text-[10px] sm:text-sm font-bold text-slate-600 bg-slate-100 px-2 sm:px-3 py-1 rounded-lg border border-slate-200">
+                                                {vehicle.department?.name || "Global"}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 sm:px-8 py-6">
+                                            <div className="flex items-center gap-2">
+                                                <span className={`h-2 w-2 rounded-full ${vehicle.isActive ? "bg-emerald-500 animate-pulse" : "bg-red-500"}`}></span>
+                                                <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${vehicle.isActive ? "text-emerald-700" : "text-red-700"}`}>
+                                                    {vehicle.isActive ? "Online" : "Offline"}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 sm:px-8 py-6 text-right">
+                                            <div className="flex items-center justify-end gap-2 sm:gap-3 transition-opacity">
+                                                <button
+                                                    onClick={() => setTrackingVehicle(vehicle)}
+                                                    className="h-9 sm:h-10 px-3 sm:px-4 bg-blue-600 text-white rounded-lg sm:rounded-xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all whitespace-nowrap"
+                                                >
+                                                    Track
+                                                </button>
+                                                <form action={deleteVehicleAction}>
+                                                    <input type="hidden" name="vehicleId" value={vehicle.id} />
+                                                    <button type="submit" className="h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center bg-red-50 text-red-500 rounded-lg sm:rounded-xl hover:bg-red-500 hover:text-white transition-all">
+                                                        <TrashIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

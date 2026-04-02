@@ -45,15 +45,18 @@ export default function LoginPage() {
 
     const handleLoginSuccess = (user: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
         const role = user.role;
+        
+        // Use hard redirection to ensure the next page loads with a fresh state and bypasses any router caching
+        let target = "/citizen/dashboard";
         if (role === "ADMIN" || role === "SUPER_ADMIN") {
-            router.push("/admin/dashboard?noAnim=true");
+            target = "/admin/dashboard";
         } else if (role === "DEPT_HEAD") {
-            router.push("/dept-head/dashboard?noAnim=true");
+            target = "/dept-head/dashboard";
         } else if (role === "OFFICER") {
-            router.push("/officer/dashboard?noAnim=true");
-        } else {
-            router.push("/citizen/dashboard?noAnim=true");
+            target = "/officer/dashboard";
         }
+        
+        window.location.assign(target);
     };
 
     return (

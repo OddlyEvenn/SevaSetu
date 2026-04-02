@@ -34,22 +34,22 @@ function RecenterMap({ position }: { position: [number, number] }) {
 function InternalMapControls({ isSatellite, setIsSatellite }: { isSatellite: boolean, setIsSatellite: (s: boolean) => void }) {
     const map = useMap();
     return (
-        <div className="absolute top-8 right-8 z-[1000] flex flex-col gap-3 animate-fade-in" style={{ animationDelay: '0.2s', pointerEvents: 'auto' }}>
+        <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-[1000] flex flex-col gap-2 sm:gap-3 animate-fade-in" style={{ animationDelay: '0.2s', pointerEvents: 'auto' }}>
             <button
                 onClick={() => map.zoomIn()}
-                className="h-14 w-14 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl flex items-center justify-center text-xl border border-white/50 hover:bg-white transition-all hover:scale-105 active:scale-95"
+                className="h-10 w-10 sm:h-14 sm:w-14 bg-white/90 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center text-sm sm:text-xl border border-white/50 hover:bg-white transition-all hover:scale-105 active:scale-95"
             >
                 ➕
             </button>
             <button
                 onClick={() => map.zoomOut()}
-                className="h-14 w-14 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl flex items-center justify-center text-xl border border-white/50 hover:bg-white transition-all hover:scale-105 active:scale-95"
+                className="h-10 w-10 sm:h-14 sm:w-14 bg-white/90 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center text-sm sm:text-xl border border-white/50 hover:bg-white transition-all hover:scale-105 active:scale-95"
             >
                 ➖
             </button>
             <button
                 onClick={() => setIsSatellite(!isSatellite)}
-                className={`h-14 w-14 rounded-2xl shadow-xl flex items-center justify-center text-xl transition-all hover:scale-110 shadow-blue-500/30 ${isSatellite ? 'bg-emerald-500 text-white' : 'bg-blue-600 text-white'}`}
+                className={`h-10 w-10 sm:h-14 sm:w-14 rounded-xl sm:rounded-2xl shadow-xl flex items-center justify-center text-sm sm:text-xl transition-all hover:scale-110 shadow-blue-500/30 ${isSatellite ? 'bg-emerald-500 text-white' : 'bg-blue-600 text-white'}`}
             >
                 {isSatellite ? '🏙️' : '🛰️'}
             </button>
@@ -115,13 +115,13 @@ export default function LiveVehicleMap({ vehicleName }: { vehicleName: string })
     return (
         <div className="relative h-full w-full overflow-hidden bg-slate-50">
             {/* Glassmorphism Header Overlay */}
-            <div className="absolute top-8 left-8 z-[1000] animate-fade-in pointer-events-none">
-                <div className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-3xl px-6 py-4 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
-                    <div className="flex items-center gap-4">
-                        <div className="h-3 w-3 rounded-full bg-blue-500 animate-pulse ring-4 ring-blue-500/20" />
+            <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-[1000] animate-fade-in pointer-events-none">
+                <div className="backdrop-blur-xl bg-white/80 border border-white/40 rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-6 sm:py-4 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="h-2 w-2 sm:h-3 sm:w-3 rounded-full bg-blue-500 animate-pulse ring-4 ring-blue-500/20" />
                         <div>
-                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] leading-none mb-1">Fleet Surveillance</p>
-                            <p className="text-xl font-black text-slate-900 leading-none">{vehicleName}</p>
+                            <p className="text-[8px] sm:text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] leading-none mb-1">Fleet Surveillance</p>
+                            <p className="text-base sm:text-xl font-black text-slate-900 leading-none">{vehicleName}</p>
                         </div>
                     </div>
                 </div>
