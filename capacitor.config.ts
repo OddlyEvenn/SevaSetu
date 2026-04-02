@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'sevasetu',
   webDir: 'public',
   server: {
-    url: 'http://10.168.52.43',
-    cleartext: true
+    url: 'https://seva-setu-azure.vercel.app/',
+    cleartext: false
   }
 };
 

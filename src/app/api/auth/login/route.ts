@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, createAuthToken, setAuthCookie } from "@/lib/auth";
 import { z } from "zod";
+import { sendOTP } from "@/lib/email";
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -50,11 +51,8 @@ export async function POST(req: Request) {
                 data: { twoFactorSecret: otp }
             });
 
-            // LOG OTP TO TERMINAL FOR THE USER
-            console.log("\n" + "=".repeat(40));
-            console.log(`🔐 2FA VERIFICATION CODE FOR ${user.email}:`);
-            console.log(`👉 CODE: ${otp}`);
-            console.log("=".repeat(40) + "\n");
+            // Send OTP via Email
+            await sendOTP(user.email, otp);
 
             return NextResponse.json({
                 requires2FA: true,
