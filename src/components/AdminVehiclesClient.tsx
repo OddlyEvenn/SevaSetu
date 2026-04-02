@@ -85,7 +85,8 @@ export default function AdminVehiclesClient({
             {/* Vehicles List */}
             <div className="lg:col-span-2">
                 <div className="rounded-[2rem] sm:rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table View */}
+                    <div className="hidden lg:block overflow-x-auto">
                         <table className="min-w-full divide-y divide-slate-100">
                             <thead className="bg-slate-50/50">
                                 <tr>
@@ -142,6 +143,51 @@ export default function AdminVehiclesClient({
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden divide-y divide-slate-100">
+                        {initialVehicles.map((vehicle) => (
+                            <div key={vehicle.id} className="p-6 hover:bg-slate-50 transition-colors">
+                                <div className="flex items-start justify-between mb-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-blue-50 text-blue-600 border border-blue-100">
+                                            <TruckIcon className="h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <div className="text-lg font-black text-slate-900 leading-tight">{vehicle.registrationNumber}</div>
+                                            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-0.5">{vehicle.type.replace("_", " ")}</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                                        <span className={`h-2 w-2 rounded-full ${vehicle.isActive ? "bg-emerald-500 animate-pulse" : "bg-red-500"}`}></span>
+                                        <span className={`text-[10px] font-black uppercase tracking-widest ${vehicle.isActive ? "text-emerald-700" : "text-red-700"}`}>
+                                            {vehicle.isActive ? "Online" : "Offline"}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
+                                        {vehicle.department?.name || "Global"}
+                                    </span>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={() => setTrackingVehicle(vehicle)}
+                                            className="h-11 px-6 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95 transition-all"
+                                        >
+                                            Surveillance
+                                        </button>
+                                        <form action={deleteVehicleAction}>
+                                            <input type="hidden" name="vehicleId" value={vehicle.id} />
+                                            <button type="submit" className="h-11 w-11 flex items-center justify-center bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                                                <TrashIcon className="h-5 w-5" />
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

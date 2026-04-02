@@ -73,6 +73,7 @@ export default function TwoFactorModal({ isOpen, onClose, userId, email, onSucce
         setError("");
         setLoading(true);
         try {
+            console.log("Verifying 2FA for User:", userId, "Code Length:", code.length);
             const res = await fetch("/api/auth/2fa/verify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -81,14 +82,17 @@ export default function TwoFactorModal({ isOpen, onClose, userId, email, onSucce
 
             const data = await res.json();
             if (!res.ok) {
+                console.error("2FA Verification Error (400?):", data);
                 setLoading(false);
                 throw new Error(data.error || "Verification failed");
             }
 
             // SUCCESS: Do not set loading to false; let the navigation handle it
+            // We give it a tiny moment to ensure state is settled
             onSuccess(data.user);
         } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-            setError(err.message);
+            setError(err.message || "An unexpected error occurred during verification.");
+            console.error("Verification Catch Error:", err);
             setLoading(false);
         }
     };
