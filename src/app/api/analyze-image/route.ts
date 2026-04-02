@@ -90,7 +90,7 @@ export async function POST(req: Request) {
                         console.warn(`Gemini ${modelName} Error/Quota: ${e.message}`);
                     }
                 }
-            } catch (err) {
+            } catch (_err) {
                 console.error("Gemini Layer totally unavailable");
             }
         }
@@ -165,7 +165,7 @@ export async function POST(req: Request) {
                     const altContent = altCompletion.choices[0]?.message?.content;
                     const altJsonMatch = altContent?.match(/\{[\s\S]*\}/);
                     if (altJsonMatch) return NextResponse.json(JSON.parse(altJsonMatch[0]));
-                } catch (e) { }
+                } catch (_e) { }
             }
         }
 
@@ -188,7 +188,7 @@ export async function POST(req: Request) {
 }
 
 /**
- * Maps a text description (from AI or filename) to a structured grievance object
+ * Maps a text description (from AI ) to a structured grievance object
  */
 function mapCaptionToResult(text: string, isHeuristic = false) {
     let result = {

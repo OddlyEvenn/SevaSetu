@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -H 0.0.0.0 --webpack",
     "host": "next dev -p 80 -H 0.0.0.0 --webpack",
-    "build": "next build --webpack",
+    "build": "prisma generate && next build --webpack",
     "start": "next start",
     "start:host": "next start -p 80 -H 0.0.0.0",
     "lint": "eslint",
