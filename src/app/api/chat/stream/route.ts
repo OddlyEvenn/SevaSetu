@@ -1,7 +1,10 @@
-import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { chatEmitter, CHAT_EVENT, VIDEO_CALL_EVENT } from "@/lib/chat-bus";
+import { streamManager } from "@/lib/stream-manager";
 
+/**
+ * Real-time SSE Stream for Chat & Video Signaling.
+ * Uses the high-performance StreamManager for scalable connection handling.
+ */
 export async function GET() {
     const user = await getCurrentUser();
 
@@ -9,81 +12,22 @@ export async function GET() {
         return new Response("Unauthorized", { status: 401 });
     }
 
-    const encoder = new TextEncoder();
+    let connectionId: string;
 
     const stream = new ReadableStream({
         start(controller) {
-            let isStreamClosed = false;
-
-            const safeSend = (data: string) => {
-                if (isStreamClosed) return false;
-                if (controller.desiredSize === null) {
-                    isStreamClosed = true;
-                    return false;
-                }
-                try {
-                    controller.enqueue(encoder.encode(data));
-                    return true;
-                } catch (e) {
-                    isStreamClosed = true;
-                    return false;
-                }
-            };
-
-                 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const onMessage = (message: any) => {
-                if (!safeSend(`data: ${JSON.stringify(message)}\n\n`)) {
-                    cleanup();
-                }
-            };
-                 
-
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const onVideoCall = (data: any) => {
-                if (!safeSend(`data: ${JSON.stringify({ sseType: "video-call", ...data })}\n\n`)) {
-                    cleanup();
-                }
-            };
-
-            const heartbeat = setInterval(() => {
-                if (!safeSend(": heartbeat\n\n")) {
-                    cleanup();
-                }
-            }, 20000);
-
-            const cleanup = () => {
-                if (isStreamClosed) return;
-                isStreamClosed = true;
-
-                chatEmitter.off(CHAT_EVENT, onMessage);
-                chatEmitter.off(VIDEO_CALL_EVENT, onVideoCall);
-                clearInterval(heartbeat);
-
-                try {
-                    controller.close();
-                } catch (e) {
-                    // Ignore already closed errors
-                }
-            };
-
-            chatEmitter.on(CHAT_EVENT, onMessage);
-            chatEmitter.on(VIDEO_CALL_EVENT, onVideoCall);
+            // Register this connection with the manager
+            connectionId = streamManager.addConnection(user.id, controller);
 
             // Send initial connection event
-            safeSend(`data: ${JSON.stringify({ type: "connected" })}\n\n`);
-                 
-
-            // Store cleanup for cancel event
-                 
-                 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this as any)._cleanup = cleanup;
+            const encoder = new TextEncoder();
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "connected" })}\n\n`));
         },
         cancel() {
-                 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            if ((this as any)._cleanup) (this as any)._cleanup();
+            // Clean up resources immediately to prevent memory leaks
+            if (connectionId) {
+                streamManager.removeConnection(connectionId);
+            }
         },
     });
 

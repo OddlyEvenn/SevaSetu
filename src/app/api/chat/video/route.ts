@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { chatEmitter, VIDEO_CALL_EVENT } from "@/lib/chat-bus";
+import { streamManager } from "@/lib/stream-manager";
 import { z } from "zod";
 
 const videoCallSchema = z.object({
@@ -41,8 +41,8 @@ export async function POST(req: Request) {
             timestamp: new Date().toISOString(),
         };
 
-        // Broadcast video call event via the bus
-        chatEmitter.emit(VIDEO_CALL_EVENT, eventData);
+        // Broadcast video call event via scalable StreamManager
+        streamManager.broadcast({ sseType: "video-call", ...eventData });
 
         return NextResponse.json({ success: true, ...eventData });
     } catch (error) {

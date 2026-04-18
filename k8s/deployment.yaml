@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sevasetu-deployment
+  labels:
+    app: sevasetu
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sevasetu
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: sevasetu
+    spec:
+      containers:
+      - name: sevasetu
+        image: your-docker-registry/sevasetu:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: sevasetu-secrets
+              key: DATABASE_URL
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sevasetu-secrets
+              key: JWT_SECRET
+        readinessProbe:
+          httpGet:
+            path: /api/system/maintenance
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /api/system/maintenance
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20

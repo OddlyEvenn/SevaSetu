@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { chatEmitter, CHAT_EVENT } from "@/lib/chat-bus";
+import { streamManager } from "@/lib/stream-manager";
 import { z } from "zod";
 
 const messageSchema = z.object({
@@ -39,8 +39,8 @@ export async function POST(req: Request) {
             },
         });
 
-        // Broadcast to all SSE listeners
-        chatEmitter.emit(CHAT_EVENT, message);
+        // Broadcast to all SSE listeners via scalable StreamManager
+        streamManager.broadcast(message);
 
         return NextResponse.json(message);
     } catch (error) {

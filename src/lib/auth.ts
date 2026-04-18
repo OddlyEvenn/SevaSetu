@@ -14,9 +14,7 @@ export interface AuthTokenPayload {
   email: string;
   role: Role;
   isVerified: boolean;
-                 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export async function hashPassword(password: string) {
@@ -40,7 +38,7 @@ export async function createAuthToken(payload: AuthTokenPayload) {
 export async function setAuthCookie(token: string) {
   (await cookies()).set(JWT_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production" && process.env.VERCEL === "1", // Only true if actually deployed on Vercel/HTTPS
+    secure: process.env.NODE_ENV === "production" && process.env.VERCEL === "1",
     sameSite: "lax", 
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
@@ -51,8 +49,7 @@ export async function clearAuthCookie() {
   (await cookies()).delete(JWT_COOKIE_NAME);
 }
 
-export async function getAuthToken():
-  Promise<AuthTokenPayload | null> {
+export async function getAuthToken(): Promise<AuthTokenPayload | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(JWT_COOKIE_NAME)?.value;
   if (!token) return null;
@@ -66,6 +63,7 @@ export async function getAuthToken():
 }
 
 export async function getCurrentUser() {
+  // Production Auth Strategy: Secure JWT Verification
   const token = await getAuthToken();
   if (!token) return null;
 
@@ -74,5 +72,3 @@ export async function getCurrentUser() {
   });
   return user;
 }
-
-

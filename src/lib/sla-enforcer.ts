@@ -9,12 +9,31 @@ export async function enforceSla() {
     try {
         const now = new Date();
 
+        // 1. DEBOUNCING / RATE-LIMITING (System Level Optimization)
+        // Check if we ran this recently to avoid redundant DB pressure
+        const lastRun = await prisma.systemSetting.findUnique({
+            where: { key: "LAST_SLA_RUN" }
+        });
+
+        const COOLDOWN_MS = 5 * 60 * 1000; // 5 Minutes
+        if (lastRun && (now.getTime() - new Date(lastRun.value).getTime() < COOLDOWN_MS)) {
+            return; // Exit early: Already optimized
+        }
+
+        // 2. SYSTEM LOCK (Mutual Exclusion)
+        // Update the timestamp BEFORE running the heavy logic to "lock" it
+        await prisma.systemSetting.upsert({
+            where: { key: "LAST_SLA_RUN" },
+            update: { value: now.toISOString() },
+            create: { key: "LAST_SLA_RUN", value: now.toISOString(), type: "STRING" }
+        });
+
+        // 3. CORE LOGIC
         // Find ALL overdue grievances across the system that aren't yet handled
         const overdueGrievances = await prisma.grievance.findMany({
             where: {
                 slaDueAt: { lt: now },
                 status: { notIn: ["ESCALATED", "RESOLVED", "CLOSED"] },
-                // We also check for priority to avoid re-processing if priority is already URGENT but status isn't ESCALATED yet
                 OR: [
                     { priority: { not: "URGENT" } },
                     { status: { not: "ESCALATED" } }

@@ -139,8 +139,7 @@ export async function GET(req: Request) {
         const status = searchParams.get("status");
         const category = searchParams.get("category");
 
-                 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const where: any = {};
 
         // Role-based filtering
@@ -159,8 +158,8 @@ export async function GET(req: Request) {
             where.category = category;
         }
 
-        // Global SLA Enforcement
-        await enforceSla();
+        // Global SLA Enforcement (Non-blocking Trigger)
+        enforceSla().catch(err => console.error("Background SLA Error:", err));
 
         const grievances = await prisma.grievance.findMany({
             where,
