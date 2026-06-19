@@ -33,8 +33,8 @@ export default function MaintenanceWatcher() {
         // Check immediately on mount
         checkMaintenanceStatus();
 
-        // Then poll every 5 seconds (5000ms)
-        const intervalId = setInterval(checkMaintenanceStatus, 5000);
+        // Then poll every 15 minutes (900000ms)
+        const intervalId = setInterval(checkMaintenanceStatus, 900000);
 
         return () => clearInterval(intervalId);
     }, [pathname, router]);

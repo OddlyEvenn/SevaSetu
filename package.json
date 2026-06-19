@@ -13,7 +13,9 @@
     "cap:open": "npx cap open android",
     "adb:bridge": "C:\\Users\\ASUS\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe reverse tcp:3000 tcp:3000",
     "tunnel": "npx localtunnel --port 3000",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",
@@ -58,7 +60,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

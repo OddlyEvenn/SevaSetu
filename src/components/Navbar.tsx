@@ -73,7 +73,7 @@ export default function Navbar({ userRole, userName }: NavbarProps) {
             }
         };
         fetchNotifications();
-        const interval = setInterval(fetchNotifications, 60000); // Poll every minute
+        const interval = setInterval(fetchNotifications, 600000); // Poll every 10 minutes
         return () => clearInterval(interval);
     }, []);
 
@@ -90,7 +90,7 @@ export default function Navbar({ userRole, userName }: NavbarProps) {
 
         if (userRole !== "CITIZEN") {
             checkUnreadChat();
-            const interval = setInterval(checkUnreadChat, 10000); // Poll every 10 seconds for chat
+            const interval = setInterval(checkUnreadChat, 180000); // Poll every 3 minutes for chat
             return () => clearInterval(interval);
         }
     }, [userRole]);
