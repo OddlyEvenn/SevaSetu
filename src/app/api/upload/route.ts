@@ -11,36 +11,40 @@ export async function POST(req: Request) {
         }
 
         const formData = await req.formData();
-        const file = formData.get("file") as File;
+        const file = formData.get("file") as File | null;
 
-        if (!file) {
+        if (!file || typeof file === "string" || typeof file.arrayBuffer !== "function") {
             return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
         }
 
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Define upload directory
-        const uploadDir = join(process.cwd(), "public", "uploads");
-
-        // Ensure directory exists
+        let imageUrl;
         try {
+            // Define upload directory
+            const uploadDir = join(process.cwd(), "public", "uploads");
+
+            // Ensure directory exists
             await mkdir(uploadDir, { recursive: true });
-        } catch (err) {
-            // Directory might already exist
+
+            // Generate unique filename
+            const uniqueId = crypto.randomUUID();
+            const extension = (file.name || "bin").split(".").pop() || "jpg";
+            const filename = `${uniqueId}.${extension}`;
+            const path = join(uploadDir, filename);
+
+            // Write file
+            await writeFile(path, buffer);
+
+            // Return the public URL
+            imageUrl = `/uploads/${filename}`;
+        } catch (writeErr) {
+            console.warn("Local file write failed, falling back to base64 Data URL:", writeErr);
+            // Fallback: Convert to base64 Data URL
+            const base64Data = buffer.toString("base64");
+            imageUrl = `data:${file.type || "image/jpeg"};base64,${base64Data}`;
         }
-
-        // Generate unique filename
-        const uniqueId = crypto.randomUUID();
-        const extension = file.name.split(".").pop();
-        const filename = `${uniqueId}.${extension}`;
-        const path = join(uploadDir, filename);
-
-        // Write file
-        await writeFile(path, buffer);
-
-        // Return the public URL
-        const imageUrl = `/uploads/${filename}`;
 
         return NextResponse.json({ imageUrl });
     } catch (error) {

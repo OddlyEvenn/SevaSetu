@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { PhotoIcon, MapPinIcon, SparklesIcon, CheckCircleIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import { Capacitor } from "@capacitor/core";
 import { Geolocation } from "@capacitor/geolocation";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -73,29 +74,51 @@ export default function NewGrievancePage() {
         setError("");
 
         try {
-            const checkPerms = await Geolocation.checkPermissions();
-            
-            if (checkPerms.location !== 'granted') {
-                const requestPerms = await Geolocation.requestPermissions();
-                if (requestPerms.location !== 'granted') {
-                    setError("Location permission denied. Please enable it in settings.");
-                    setDetectingLocation(false);
-                    return;
+            let latitude = "";
+            let longitude = "";
+
+            try {
+                if (Capacitor.isNativePlatform()) {
+                    const checkPerms = await Geolocation.checkPermissions();
+                    
+                    if (checkPerms.location !== 'granted') {
+                        const requestPerms = await Geolocation.requestPermissions();
+                        if (requestPerms.location !== 'granted') {
+                            setError("Location permission denied. Please enable it in settings.");
+                            setDetectingLocation(false);
+                            return;
+                        }
+                    }
+                }
+
+                const position = await Geolocation.getCurrentPosition({
+                    enableHighAccuracy: true,
+                    timeout: 10000
+                });
+                latitude = position.coords.latitude.toString();
+                longitude = position.coords.longitude.toString();
+            } catch (capErr) {
+                console.warn("Capacitor Geolocation failed, trying web fallback:", capErr);
+                if (typeof window !== "undefined" && navigator.geolocation) {
+                    const webPosition = await new Promise<GeolocationPosition>((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 10000
+                        });
+                    });
+                    latitude = webPosition.coords.latitude.toString();
+                    longitude = webPosition.coords.longitude.toString();
+                } else {
+                    throw capErr;
                 }
             }
 
-            const position = await Geolocation.getCurrentPosition({
-                enableHighAccuracy: true,
-                timeout: 10000
-            });
-
-            setFormData({
-                ...formData,
-                latitude: position.coords.latitude.toString(),
-                 
-                longitude: position.coords.longitude.toString(),
-            });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setFormData(prev => ({
+                ...prev,
+                latitude,
+                longitude,
+            }));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             console.error("Location error:", err);
             setError("Unable to detect location. Please ensure GPS is on and try again.");
